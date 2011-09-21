@@ -1,0 +1,57 @@
+osmtile
+===========================================================================
+
+This program splits OpenStreetMap XML files and merges segments created
+with this program.
+
+===========================================================================
+
+Usage: osmtile --split [OPTIONS] SOURCE
+or:    osmtile --merge --of=DEST [OPTIONS] SOURCE
+Split SOURCE file, or merge SOURCE files to DEST file
+
+Options (only in splitting mode):
+--output-dir=DIR      	write tiles to DIR (defaults to working directory)
+--index-file=FILE     	write index file (~6 GB) to FILE (defaults to 
+			"node2tn" in working directory)
+--tile-size=SIZE      	create tiles of SIZE degrees in width and height 
+			(defaults to 1)
+--slim                	save temporary nodes on disk, not in RAM
+
+
+Examples:
+
+java -jar osmtile.jar --split --output-dir=planet-segments
+--tile-size=0.5 planet.osm
+
+java -jar osmtile.jar --merge --of=planet-merged.osm planet-segments/*
+
+
+Note:
+
+Use the java -Xmx parameter if you get OutOfMemoryError. Increase
+the limit for open files in your operating system if you get the "Too many
+open files" error.
+
+===========================================================================
+
+DISCLAIMER
+
+osmtile is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2 as
+published by the Free Software Foundation.
+
+osmtile is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+GNU General Public License for more details.
+
+===========================================================================
+
+Author: Jan Behrens
+
+Based on cutTheOsmPlanet:
+	Copyright (C) 2010 Heiko Budras
+	Author: Heiko Budras
+	Tile logic: Carsten Schwede
+
