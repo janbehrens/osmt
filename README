@@ -1,4 +1,4 @@
-osmtile
+OSMT - OSM Split and Merge Tool
 ===========================================================================
 
 This program splits OpenStreetMap XML files and merges segments created
@@ -6,8 +6,8 @@ with this program.
 
 ===========================================================================
 
-Usage: osmtile --split [OPTIONS] SOURCE
-or:    osmtile --merge --of=DEST [OPTIONS] SOURCE
+Usage: osmt --split [OPTIONS] SOURCE
+or:    osmt --merge --of=DEST [OPTIONS] SOURCE
 Split SOURCE file, or merge SOURCE files to DEST file
 
 Options (only in splitting mode):
@@ -21,34 +21,40 @@ Options (only in splitting mode):
 
 Examples:
 
-java -jar osmtile.jar --split --output-dir=planet-segments
+java -jar osmt.jar --split --output-dir=planet-segments
 --tile-size=0.5 planet.osm
 
-java -jar osmtile.jar --merge --of=planet-merged.osm planet-segments/*
+java -jar osmt.jar --merge --of=planet-merged.osm planet-segments/*
 
 
 Note:
 
-Use the java -Xmx parameter if you get OutOfMemoryError. Increase
+Use the Java -Xmx parameter if you get OutOfMemoryError. Increase
 the limit for open files in your operating system if you get the "Too many
 open files" error.
 
 ===========================================================================
 
-DISCLAIMER
+Project hosting:
 
-osmtile is free software; you can redistribute it and/or modify
+https://github.com/antofosm/osmt
+
+===========================================================================
+
+DISCLAIMER:
+
+OSMT is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 2 as
 published by the Free Software Foundation.
 
-osmtile is distributed in the hope that it will be useful,
+OSMT is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 GNU General Public License for more details.
 
 ===========================================================================
 
-Author: Jan Behrens
+Author: Jan Behrens <antofosm@gmail.com>
 
 Based on cutTheOsmPlanet:
 	Copyright (C) 2010 Heiko Budras

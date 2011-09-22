@@ -1,11 +1,11 @@
 /*
- *	This file is part of osmtile.
+ *	This file is part of OSMT.
  *	
- *	osmtile is free software; you can redistribute it and/or modify
+ *	OSMT is free software; you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License version 2 as
  *	published by the Free Software Foundation.
  *
- *	osmtile is distributed in the hope that it will be useful,
+ *	OSMT is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
  *	GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * 	Author: Jan Behrens - 2011
  */
 
-package osmtile;
+package osmt;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -87,7 +87,7 @@ public class Merge {
 		
 		//write opening tags
 		fh.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		fh.write("<osm version=\"0.6\" generator=\"osmtile\">\n");
+		fh.write("<osm version=\"0.6\" generator=\"osmt\">\n");
 		
 		
 		//1st pass: parse nodes, save them to TreeMap
