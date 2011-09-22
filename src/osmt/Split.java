@@ -37,6 +37,8 @@ public class Split {
 	String target = "";
 	Tile t, previousT;
 	
+	HashMap<String, String> attr;
+	
 	HashMap<Integer, Tile> tilesMap = new HashMap<Integer, Tile>();
 	
 	//sets and maps used during way processing
@@ -70,6 +72,20 @@ public class Split {
 		try {
 			FileReader fr = new FileReader(inputFileName);
 			br = new BufferedReader(fr);
+			
+			boolean invalidOSM = true;
+			
+			for (int i = 0; i < 3; i++) {
+				if (!br.readLine().contains("<osm")) {
+					invalidOSM = false;
+				}
+			}
+			if (invalidOSM) {
+				System.err.println("Error: no OSM XML root tag found");
+				System.exit(1);
+			}
+			fr = new FileReader(inputFileName);
+			br = new BufferedReader(fr);
 		} catch (Exception e) {
 			System.err.println("Error opening input file: " + inputFileName);
 			System.exit(1);
@@ -98,10 +114,10 @@ public class Split {
 				target = "nodes";
 				
 				//parse id, lat, lon
-				String[] lineA = line.replace('=', ' ').replace('"', ' ').split(" +");
-				nodeLat = Float.valueOf(lineA[4]);
-				nodeLon = Float.valueOf(lineA[6]);
-				nodeId = Long.valueOf(lineA[2]);
+				attr = parseAttr(line);
+				nodeId = Long.valueOf(attr.get("id"));
+				nodeLat = Float.valueOf(attr.get("lat"));
+				nodeLon = Float.valueOf(attr.get("lon"));
 				
 				//write tile number to random access file
 				tn = n2tn.setTn(nodeId, nodeLat, nodeLon);
@@ -153,14 +169,14 @@ public class Split {
 			//nd
 			else if (line.contains("<nd ")) {
 				//parse ref
-				String[] lineA = line.replace('=', ' ').replace('"', ' ').split(" +");
-				ref = Long.valueOf(lineA[2]);
+				attr = parseAttr(line);
+				ref = Long.valueOf(attr.get("ref"));
 				
 				//get tile
 				tn = n2tn.getTn(ref);
 				t = tilesMap.get(tn);
 				tiles.add(t);
-
+				
 //debug
 if (debug) {
 	System.out.println("== ref "+ref+" in tile "+tn+" ==");
@@ -357,8 +373,8 @@ if (debug) {
 	/**
 	 * storeRemoteNode: write a single node entry from tile to remote's TreeMap
 	 * @param ref
-	 * @param tn
-	 * @param remoteTn
+	 * @param tile
+	 * @param remote
 	 */
 	void storeRemoteNode(long ref, Tile tile, Tile remote) {
 		String s = tile.nodesMap.get(ref);
@@ -371,7 +387,7 @@ if (debug) {
 	
 	/**
 	 * writeRefs: write <nd .../> lines to file
-	 * @param tn
+	 * @param tile
 	 */
 	void writeRefs(Tile tile) {
 		//fix problem with first/last node of closed way being the last remote node
@@ -387,5 +403,23 @@ if (debug) {
 				tile.writeTmpWays("		<nd ref=\"" + refs.get(tile).get(i) + "\"/>");
 			}
 		}
+	}
+	
+	/**
+	 * parseAttr: parse XML attributes from a line
+	 * @param line
+	 * @return key/value HashMap
+	 */
+	public static HashMap<String, String> parseAttr(String line) {
+		HashMap<String, String> result = new HashMap<String, String>();
+		String[] attributes = line.trim().replaceAll("/>$", "").replaceAll(">$", "").split(" +");
+		
+		for (String s : attributes) {
+			if (s.contains("=")) {
+				String[] keyValue = s.replace("\"", "").split("=");
+				result.put(keyValue[0], keyValue[1]);
+			}
+		}
+		return result;
 	}
 }

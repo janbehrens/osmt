@@ -77,7 +77,7 @@ public class Tile {
 		
 		try {
 			tileWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			tileWriter.write("<osm version=\"0.6\" generator=\"cutTheOsmPlanet\">\n");
+			tileWriter.write("<osm version=\"0.6\" generator=\"osmt\">\n");
 			tileWriter.write("<bounds minlat=\"" + bounds[0] + "\" minlon=\"" + bounds[1] + "\" maxlat=\"" + bounds[2] + "\" maxlon=\"" + bounds[3] + "\"/>\n");
 		} catch (IOException e) {
 			System.err.println("error writing to file: " + tileFn);

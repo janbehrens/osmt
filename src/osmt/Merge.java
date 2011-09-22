@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,6 +73,8 @@ public class Merge {
 		TreeMap<Long, TileReader> nodesMap = new TreeMap<Long, TileReader>();
 		TreeMap<Long, TileReader> waysMap = new TreeMap<Long, TileReader>();
 		
+		HashMap<String, String> attr;
+		
 		TileReader tr;
 		String line;
 		long nodeId = 0L, wayId = 0L, newId = 1000000000L;
@@ -100,11 +103,11 @@ public class Merge {
 			//parse XML
 			while ((line = br.readLine()) != null) {
 				if (line.contains("<bounds ")) {
-					String[] attr = line.replace('=', ' ').replace('"', ' ').split(" +");
-					float tileMinLat = Float.valueOf(attr[2]);
-					float tileMinLon = Float.valueOf(attr[4]);
-					float tileMaxLat = Float.valueOf(attr[6]);
-					float tileMaxLon = Float.valueOf(attr[8]);
+					attr = Split.parseAttr(line);
+					float tileMinLat = Float.valueOf(attr.get("minlat"));
+					float tileMinLon = Float.valueOf(attr.get("minlon"));
+					float tileMaxLat = Float.valueOf(attr.get("maxlat"));
+					float tileMaxLon = Float.valueOf(attr.get("maxlon"));
 					
 					minLat = Math.min(minLat, tileMinLat);
 					minLon = Math.min(minLon, tileMinLon);
@@ -112,8 +115,8 @@ public class Merge {
 					maxLon = Math.max(maxLon, tileMaxLon);
 				}
 				else if (line.contains("<node ")) {
-					String[] attr = line.replace('=', ' ').replace('"', ' ').split(" +");
-					nodeId = Long.valueOf(attr[2]);
+					attr = Split.parseAttr(line);
+					nodeId = Long.valueOf(attr.get("id"));
 					nodesMap.put(nodeId, t);
 				}
 				else if (line.contains("<way ") || line.contains("<relation ") || line.contains("</osm>")) {
@@ -191,18 +194,18 @@ public class Merge {
 					splitWay = parse = segmentSaved = false;
 					segment = new WaySegment();
 					
-					String[] attr = line.replace('=', ' ').replace('"', ' ').split(" +");
-					wayId = Long.valueOf(attr[2]);
+					attr = Split.parseAttr(line);
+					wayId = Long.valueOf(attr.get("id"));
 					
 					waysMap.put(wayId, t);
 				}
 				else if (line.contains("<nd ")) {
-					String[] nd = line.replace('=', ' ').replace('"', ' ').split(" +");
-					segment.refs.add(Long.valueOf(nd[2]));
+					attr = Split.parseAttr(line);
+					segment.refs.add(Long.valueOf(attr.get("ref")));
 					
 					//tn attribute?
-					tnFound = nd.length == 6 && nd[3].equals("tn");
-					segment.refTn.add(tnFound ? Integer.parseInt(nd[4]) : 0);
+					tnFound = attr.containsKey("tn");
+					segment.refTn.add(tnFound ? Integer.parseInt(attr.get("tn")) : 0);
 					
 					if (tnFound) splitWay = true;
 				}
